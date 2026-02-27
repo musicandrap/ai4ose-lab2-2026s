@@ -1,0 +1,11 @@
+[package]
+name = "ai4ose-lab2-2026s"
+version = "0.2.0"
+edition = "2024"
+authors = ["Yu Chen <yuchen@tsinghua.edu.cn>"]
+description = "AI4OSE Lab2: A minimal Rust application for OS kernel learning"
+license = "GPL-3.0"
+repository = "https://github.com/learningos/ai4ose-lab2-2026s"
+readme = "README.md"
+keywords = ["os", "kernel", "learning", "AI4OSE","AI"]
+categories = ["command-line-utilities"]
