@@ -1,102 +1,53 @@
-# ai4ose-lab2-2026s
+# 进度汇报T2L4------同步互斥机制（从“能跑”到“公平/可证明不饿死”）
 
-[![Crates.io](https://img.shields.io/crates/v/ai4ose-lab2-2026s.svg)](https://crates.io/crates/ai4ose-lab2-2026s)
-[![License: GPL-3.0](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](LICENSE)
+## 第一周：
 
-AI4OSE lab2: 与AI合作进行操作系统内核学习的起点。
+阶段一finished：完成了ch1-8
 
-执行本项目后，会输出 AI4OSE 实验二说明内容。
+阶段二完成了部分测试，相关思路在下面的第二周中
 
-##  **快速浏览**
+## 第二周：
 
-直接阅读[**AI4OSE实验二内容**](https://github.com/LearningOS/ai4ose-lab2-2026s/blob/main/src/content.md)
+**1.**既然以ch8为参照的话，就需要排除其他的干扰因素加快测试速度和质量，只关心**我需要的**同步等机制的测试效果，只保留了
 
+ch8_deadlock_mutex1.rs  ch8_deadlock_sem2.rs  ch8b_usertest.rs  sync_sem.rs      threads.rs
+ch8_deadlock_sem1.rs    ch8_usertest.rs       mpsc_sem.rs       test_condvar.rs  threads_arg.rs
 
-## **常规浏览**
+![原测试用例](./T2L1/Finish/images/1.png)
 
-### 1. 安装 Rust 工具链
+**2.**通过**AI**来总结项目重点，我只负责审查后让其设计相对应的数据结构和方向：
 
-本项目使用 Rust 语言编写，需要安装 Rust 工具链（包含 `rustc` 编译器和 `cargo` 构建工具）。
+ **这个实验的重点是：让“锁不仅能用”，而是“行为可测、性能可比、公平性可验证”。**
 
-**Linux / macOS / WSL：**
+再展开成三点最核心的：
 
-```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
+1. **正确性**
+   - 保证互斥、不死锁、不丢唤醒（不是“跑起来就行”）
+2. **性能对比**
+   - 看清自旋锁 vs 睡眠锁在竞争、CPU占用、上下文切换上的差异
+3. **公平性（最关键）**
+   - 是否会出现 starvation
+   - 最大等待时间是否可控（能不能“证明不会饿死”）
 
-安装完成后，按照提示将 Rust 加入环境变量（或重新打开终端）：
-
-```bash
-source "$HOME/.cargo/env"
-```
-
-**Windows：**
-
-从 [https://rustup.rs](https://rustup.rs) 下载并运行 `rustup-init.exe`，按照提示完成安装。
-
-验证安装
-
-```bash
-rustc --version    # 应显示 rustc 1.xx.x
-cargo --version    # 应显示 cargo 1.xx.x
-```
-
-### 2. 直接下载安装执行：显示实验内容
-
-使用 `cargo install` 从 crates.io 下载、编译并安装到本地：
-
-```bash
-cargo install ai4ose-lab2-2026s
-```
-
-安装完成后，可执行文件会被放置在 `$HOME/.cargo/bin/` 目录下（该目录通常已在 PATH 中），之后可以在任意位置直接运行：
-
-```bash
-ai4ose-lab2-2026s
-```
-
-程序将输出 AI4OSE 实验二的完整说明内容。
-
-### 3. 源代码下载编译安装执行：显示实验内容
-
-**方式一：通过 Git 克隆仓库**
-
-```bash
-git clone https://github.com/learningos/ai4ose-lab2-2026s.git
-cd ai4ose-lab2-2026s
-```
-
-**方式二：通过 cargo clone 获取**
-
-使用 `cargo clone`（需先安装 `cargo-clone`）：
-
-```bash
-cargo install cargo-clone
-cargo clone ai4ose-lab2-2026s
-cd ai4ose-lab2-2026s
-```
-
-该命令会从 crates.io 下载指定 crate 的源代码，并解压到以 crate 名称命名的目录中，可直接进行编译和修改。
-
-**方式三：通过 cargo download 下载**
-
-使用 `cargo download`（需先安装 `cargo-download`）：
-
-```bash
-cargo install cargo-download
-cargo download ai4ose-lab2-2026s > ai4ose-lab2-2026s.tar.gz
-tar xzf ai4ose-lab2-2026s.tar.gz
-cd ai4ose-lab2-2026s-*/
-```
-
-也可以直接在浏览器中访问 [https://crates.io/crates/ai4ose-lab2-2026s](https://crates.io/crates/ai4ose-lab2-2026s) 页面，点击 "Download" 按钮下载源码包。
+ 最本质一句话：
+ **从“实现锁”升级为“理解并验证并发系统的行为”。**
 
 
-#### 编译运行
 
-```bash
-cargo build
-cargo run
-```
+但是仅仅只是上述要求AI只能实现如SpinLock数据结构的设计，量化分析的代码无法实现，需要深入理解实验的要求：
+**把仅仅是实现了同步机制锁变成带统计的锁 + 可控压力测试 + 自动化出结果并且统计分析数据一条龙的落地项目**
 
-程序将输出 **AI4OSE 实验二的完整说明内容**。
+然后让AI具体化主旨为具体的结构设计方向：
+**具体做法是：先在每种锁内部埋点统计（记录加锁尝试、等待时间、持锁时间、sleep/wakeup 等），再写一个统一的多线程压力测试程序（循环加锁→执行临界区→解锁，控制线程数和临界区时间），分别运行不同锁并收集数据，最后用表格对比这些指标，从而分析它们在性能、上下文切换和公平性上的差异。**
+
+总体设计后需要量化的表格或者图形化的表示，docker中图形化不好搞，我就先用Python+csv表格吧(记得**安装python的环境**，不然会失败滴)
+
+暂时的效果展示，我会在周四晚或者是周五更新更加详细的说明文档
+
+![结果1](./T2L1/Finish/images/报告生成.png)
+
+## 接下来需要克服的难题：
+
+1.话的图中出现"口"形式的错误乱码
+
+2.使用数据来对比优化后的提升效果

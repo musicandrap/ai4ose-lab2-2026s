@@ -1,0 +1,38 @@
+warning: fields `operations_per_thread` and `critical_section_time` are never read
+  --> src/bin/sync_experiment.rs:17:5
+   |
+15 | struct ExperimentConfig {
+   |        ---------------- fields in this struct
+16 |     thread_count: usize,
+17 |     operations_per_thread: usize,
+   |     ^^^^^^^^^^^^^^^^^^^^^
+18 |     critical_section_time: u64, // 毫秒
+   |     ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: direct cast of function item into an integer
+  --> src/bin/sync_experiment.rs:80:52
+   |
+80 |         threads[i] = thread_create(spinlock_worker as usize, &lock as *const _ as usize);
+   |                                                    ^^^^^^^^
+   |
+   = note: `#[warn(function_casts_as_integer)]` on by default
+help: first cast to a pointer `as *const ()`
+   |
+80 |         threads[i] = thread_create(spinlock_worker as *const () as usize, &lock as *const _ as usize);
+   |                                                    ++++++++++++
+
+warning: direct cast of function item into an integer
+   --> src/bin/sync_experiment.rs:119:49
+    |
+119 |         threads[i] = thread_create(mutex_worker as usize, &lock as *const _ as usize);
+    |                                                 ^^^^^^^^
+    |
+help: first cast to a pointer `as *const ()`
+    |
+119 |         threads[i] = thread_create(mutex_worker as *const () as usize, &lock as *const _ as usize);
+    |                                                 ++++++++++++
+
+warning: `tg-rcore-tutorial-user` (bin "sync_experiment") generated 3 warnings (run `cargo fix --bin "sync_experiment" -p tg-rcore-tutorial-user` to apply 2 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.52s
