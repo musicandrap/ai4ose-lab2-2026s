@@ -1,0 +1,10 @@
+=== 对照测试详细报告 ===
+
+test_name  correct_passed  error_detected  correct_time_ms  broken_time_ms         description
+    互斥锁测试            True           False             1200            1500          缺少唤醒导致性能下降
+    互斥锁测试            True            True                0            5000 成功检测到错误：缺少唤醒导致超时或死锁
+     死锁检测            True            True                0            3000             成功检测到死锁
+
+统计摘要:
+- 正确版本通过率: 3/3
+- 错误检测成功率: 2/3

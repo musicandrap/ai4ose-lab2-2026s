@@ -1,0 +1,14 @@
+=== 增强版对照测试详细报告 ===
+
+test_name  correct_passed  error_detected  correct_time_ms  broken_time_ms  performance_ratio description
+互斥锁测试（增强）            True           False             1200            1500               1.25          通过
+互斥锁测试（增强）            True            True                0            5000               0.00     成功检测到超时
+   性能对比测试            True            True             1200            2500               2.08   成功检测到性能异常
+
+统计摘要:
+- 正确版本通过率: 3/3
+- 错误检测成功率: 2/3
+
+错误类型分布:
+- Timeout: 1
+- Performance: 1

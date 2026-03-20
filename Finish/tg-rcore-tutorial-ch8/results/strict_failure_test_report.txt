@@ -1,0 +1,9 @@
+=== 严格版对照测试详细报告 ===
+
+test_name  correct_passed  error_detected  correct_avg_time_ms  broken_avg_time_ms  performance_ratio  confidence_score        description
+ 严格版互斥锁测试            True            True               1200.0              1500.0               1.25              0.85 成功检测到性能异常（绝对时间差过大）
+
+统计摘要:
+- 正确版本通过率: 1/1
+- 错误检测成功率: 1/1
+- 平均置信度评分: 0.85
