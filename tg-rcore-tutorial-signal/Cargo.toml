@@ -13,5 +13,5 @@ keywords = ["rcore", "signal", "no-std", "riscv"]
 categories = ["no-std", "embedded"]
 
 [dependencies]
-tg-kernel-context = { package = "tg-rcore-tutorial-kernel-context", path = "../tg-rcore-tutorial-kernel-context", version = "0.4.8" }
-tg-signal-defs = { package = "tg-rcore-tutorial-signal-defs", path = "../tg-rcore-tutorial-signal-defs", version = "0.4.8" }
+tg-kernel-context = { package = "tg-rcore-tutorial-kernel-context", git = "https://github.com/musicandrap/ai4ose-lab2-2026s", version = "0.1.0-preview.1", tag = "v0.4.8" }
+tg-signal-defs = { package = "tg-rcore-tutorial-signal-defs", git = "https://github.com/musicandrap/ai4ose-lab2-2026s", version = "0.1.0-preview.1", tag = "v0.4.8" }
